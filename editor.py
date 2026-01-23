@@ -35,3 +35,12 @@ class BlurProcessor(ImageProcessor):
     def process(self, image):
         """ implements gaussian blur to an image"""
         return cv2.GaussianBlur(image, (self.k, self.k), 0)
+
+# BrightnessProcessor child class
+class BrightnessProcessor(ImageProcessor):
+    def __init__(self, value):
+        self.value = value
+
+    def process(self, image):
+        """ implements logic to adjust brightness value"""
+        return cv2.convertScaleAbs(imagee, beeta=self.value)
