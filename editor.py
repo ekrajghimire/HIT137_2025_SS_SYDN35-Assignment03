@@ -23,3 +23,15 @@ class EdgeProcessor(ImageProcessor):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # Canny works on grayscale images
     return cv2.Canny(gray, 100, 200)
+  
+
+
+# BlurProcessor child class
+class BlurProcessor(ImageProcessor):
+    def __init__(self, k):
+        # Kernel size must be odd for Gaussian blur
+        self.k = k if k % 2 == 1 else k + 1
+
+    def process(self, image):
+        """ implements gaussian blur to an image"""
+        return cv2.GaussianBlur(image, (self.k, self.k), 0)
