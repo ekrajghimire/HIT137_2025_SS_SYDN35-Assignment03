@@ -43,4 +43,4 @@ class BrightnessProcessor(ImageProcessor):
 
     def process(self, image):
         """ implements logic to adjust brightness value"""
-        return cv2.convertScaleAbs(imagee, beeta=self.value)
+        return cv2.convertScaleAbs(image, beta=self.value)
