@@ -57,3 +57,22 @@ class FlipProcessor(ImageProcessor):
         if flipCode == "horizontal":
           flipCode = 1
         return cv2.flip(image, flipCode)
+
+# RotateProcessor child class
+class RotateProcessor(ImageProcessor):
+    def __init__(self, angle):
+        self.angle = angle
+
+    def process(self, image):
+        """ implement logic for rotating the image"""
+        # opencv providers rotation helpers, they are built-in
+        if self.angle == 90:
+            # rotate 90 degree clockwise
+            return cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+        if self.angle == 180:
+            # rotate 180 degree
+            return cv2.rotate(image, cv2.ROTATE_180)
+        if self.angle == 270:
+            # rotate 90 degree counter clockwise
+            return cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        return image
