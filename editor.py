@@ -44,3 +44,16 @@ class BrightnessProcessor(ImageProcessor):
     def process(self, image):
         """ implements logic to adjust brightness value"""
         return cv2.convertScaleAbs(image, beta=self.value)
+
+# Flipprocessor child class
+class FlipProcessor(ImageProcessor):
+    def __init__(self, mode):
+        self.mode = mode
+
+    def process(self, image):
+        """ implement logic to flip the image """
+        # flipCode: 1 = horizontal, 0 = vertical
+        flipCode = 0 
+        if flipCode == "horizontal":
+          flipCode = 1
+        return cv2.flip(image, flipCode)
