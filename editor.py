@@ -78,10 +78,46 @@ class RotateProcessor(ImageProcessor):
         return image
 
 
+
+# Menu bar for window
+class MenuBar:
+    def __init__(self,root,app):
+        # menubar object
+        menubar = tk.Menu(root)
+        
+        # create a file menu
+        file_menu = tk.Menu(menubar)
+        # add Open command to file menu
+        file_menu.add_command(label="Open", command=app.open_image)
+        # add Save as command to file menu
+        file_menu.add_command(label="Save As", command=app.save_image)
+        # add a separator
+        file_menu.add_separator()
+        # add Exit command
+        file_menu.add_command(label="Exit", command=root.quit) # It will exit the program
+        
+        
+        # create an edit menu
+        edit_menu = tk.Menu(menubar)
+        # add Undo command
+        edit_menu.add_command(label="Undo", command=app.undo)
+        # add redo command
+        edit_menu.add_command(label="Redo", command=app.redo)
+        
+        
+        # Add file_menu and edit_menu to the menubar
+        menubar.add_cascade(label="File",menu=file_menu)
+        menubar.add_cascade(label="Edit",menu=edit_menu)
+        
+        # assign the menubar to root
+        root.config(menu=menubar)
+
+       
+
 # Main Application class
 class ImageEditorApplication:
     """ Cordinates all components and logic of the program """
-    def __init__(self):
+    def __init__(self,root):
         self.root = root
         # window details
         self.root.title("SYD35_Group_Image_Editor")
