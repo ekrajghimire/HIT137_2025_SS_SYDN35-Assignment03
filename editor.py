@@ -76,3 +76,30 @@ class RotateProcessor(ImageProcessor):
             # rotate 90 degree counter clockwise
             return cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
         return image
+
+
+# Main Application class
+class ImageEditorApplication:
+    """ Cordinates all components and logic of the program """
+    def __init__(self):
+        self.root = root
+        # window details
+        self.root.title("SYD35_Group_Image_Editor")
+    
+    def open_image(self):
+        """ implement the file dialog opening for image loading"""
+        pass
+    
+    def save_image(self):
+        """ implement the logic to save image"""
+        pass
+    
+    def undo(self):
+        """ implement logic to undo the recent action """
+        pass   
+    
+    def redo(self):
+        """implement logic to redo the recent action"""
+        pass
+    
+    
