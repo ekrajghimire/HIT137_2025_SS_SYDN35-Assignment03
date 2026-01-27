@@ -1,5 +1,6 @@
 import cv2
 import tkinter as tk
+from tkinter import filedialog
 
 
 # Image Processor parent class
@@ -112,7 +113,28 @@ class MenuBar:
         # assign the menubar to root
         root.config(menu=menubar)
 
-       
+# ImageLoader class for opening and saving images
+class ImageLoader:
+    """ implements methods for opening and saving image"""
+    def open_image(self):
+        """ loads images using file dialog"""
+        # only open a single image (only the image types mentioned on assignment are allowed)
+        path = filedialog.askopenfilename(filetypes=[("Images","*.jpg,*.png,*.bmp")])
+        
+        if path:
+            # read the image using opencv
+            # return the read image and the path of the image
+            return cv2.imread(path),path
+        return None,None
+    
+    def save_image(self,image):
+        """ save the current image """
+        path = filedialog.asksaveasfilename(defaultextension=".jpg") # default extension is jpg
+        if path:
+            cv2.imwrite(path, image)
+            return path
+        return None
+        
 
 # Main Application class
 class ImageEditorApplication:
