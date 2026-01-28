@@ -1,6 +1,7 @@
 import cv2
 import tkinter as tk
 from tkinter import filedialog
+from PIL import Image, ImageTk
 
 
 # Image Processor parent class
@@ -135,7 +136,54 @@ class ImageLoader:
             return path
         return None
         
+# ImageDisplay class to display image on the window
+class ImageDisplay:
+    """ display the image on application """
+    def __init__(self, parent):
+        self.container = tk.Frame(parent, bg="black", height=420,width=500)
+        self.container.grid(row=0, column=0, sticky="nsew")
+        # Prevent frame from resizing to image size
+        self.container.grid_propagate(False)
 
+        self.label = tk.Label(self.container, bg="black")
+        self.label.pack(expand=True)
+
+        self.last_image = None
+
+    def resize_to_fit(self, image):
+        """ method to the fit the image within the frame"""
+        # Reference: https://stackoverflow.com/questions/50422735/tkinter-resize-frame-and-contents-with-main-window
+        # Get available frame size
+        fw = self.container.winfo_width()
+        fh = self.container.winfo_height()
+
+        # Avoid division errors during startup
+        if fw < 10 or fh < 10:
+            return image
+
+        h, w = image.shape[:2]
+        # Maintain aspect ratio
+        scale = min(fw / w, fh / h)
+        return cv2.resize(image, (int(w * scale), int(h * scale)))
+
+    def show(self, image):
+        """ show the image on the application """
+        self.last_image = image
+        image = self.resize_to_fit(image)
+
+        # Convert image format for Tkinter display
+        if len(image.shape) == 2:
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+        else:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        # Display the image
+        tk_img = ImageTk.PhotoImage(Image.fromarray(image))
+        # Keep reference to avoid garbage collection
+        self.label.image = tk_img
+        self.label.config(image=tk_img)
+
+    
 # Main Application class
 class ImageEditorApplication:
     """ Cordinates all components and logic of the program """
