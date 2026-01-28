@@ -213,6 +213,22 @@ class ImageState:
             self.current = self.redo_stack.pop()
 
     
+# StatusBar class to display info on status bar
+class StatusBar(tk.Label):
+    """ display information on status bar"""
+    
+    def __init__(self, parent):
+        super().__init__(parent, bd=1,relief=tk.SUNKEN, anchor="w")
+        self.pack(fill=tk.X)
+
+    def update(self, name, image):
+        # update the status bar with necessary information such as image name and resolution
+        h, w = image.shape[:2]
+        self.config(text=f"{name} | {w} x {h}")
+    
+
+
+
 # Main Application class
 class ImageEditorApplication:
     """ Cordinates all components and logic of the program """
