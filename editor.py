@@ -183,6 +183,35 @@ class ImageDisplay:
         self.label.image = tk_img
         self.label.config(image=tk_img)
 
+
+# ImageState class to allow for redo and undo action on image
+class ImageState:
+    def __init__(self):
+        self.current = None
+        self.undo_stack = []
+        self.redo_stack = []
+
+    def set(self, image):
+        """ track the action"""
+        # Save previous state for undo
+        if self.current is not None:
+            self.undo_stack.append(self.current)
+        self.current = image
+        # Redo history is cleared after new action
+        self.redo_stack.clear()
+
+    def undo(self):
+        """ allows undo action """
+        if self.undo_stack:
+            self.redo_stack.append(self.current)
+            self.current = self.undo_stack.pop()
+
+    def redo(self):
+        """ redo the action """
+        if self.redo_stack:
+            self.undo_stack.append(self.current)
+            self.current = self.redo_stack.pop()
+
     
 # Main Application class
 class ImageEditorApplication:
