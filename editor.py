@@ -250,6 +250,32 @@ class MessagePanel:
         self.text.see(tk.END)
         self.text.config(state="disabled")
 
+# ControlPanel class contains buttons for image manipulation
+class ControlPanel:
+    def __init__(self, parent, app):
+        self.frame = tk.Frame(parent, padx=10, pady=10)
+        self.frame.grid(row=0, column=1, sticky="ns")
+
+        tk.Label(self.frame, text="Image Tools",
+                 font=("Arial", 11, "bold")).pack(pady=5)
+
+        # Each button creates a processor object
+        # and passes it to the main application
+        tk.Button(self.frame, text="Grayscale",
+                  command=lambda: app.apply_processor(
+                      GrayscaleProcessor(), "Grayscale applied")
+                  ).pack(fill="x", pady=2)
+
+        tk.Button(self.frame, text="Edge Detection",
+                  command=lambda: app.apply_processor(
+                      EdgeProcessor(), "Edge detection applied")
+                  ).pack(fill="x", pady=2)
+
+        tk.Button(self.frame, text="Rotate 90°",
+                  command=lambda: app.apply_processor(
+                      RotateProcessor(90), "Image rotated 90°")
+                  ).pack(fill="x", pady=2)
+
 
 # Main Application class
 class ImageEditorApplication:
