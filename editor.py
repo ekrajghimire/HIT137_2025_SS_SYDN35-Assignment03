@@ -369,7 +369,9 @@ class ImageEditorApplication:
     
     def undo(self):
         """ implement logic to undo the recent action """
-        pass   
+        self.state.undo()
+        self.refresh()
+        self.messages.log("Undo performed")
     
     def redo(self):
         """implement logic to redo the recent action"""
