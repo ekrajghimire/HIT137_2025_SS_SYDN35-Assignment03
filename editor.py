@@ -261,20 +261,47 @@ class ControlPanel:
 
         # Each button creates a processor object
         # and passes it to the main application
+        
+        # Grayscale conversion
         tk.Button(self.frame, text="Grayscale",
                   command=lambda: app.apply_processor(
                       GrayscaleProcessor(), "Grayscale applied")
                   ).pack(fill="x", pady=2)
 
+        # Edge detection
         tk.Button(self.frame, text="Edge Detection",
                   command=lambda: app.apply_processor(
                       EdgeProcessor(), "Edge detection applied")
                   ).pack(fill="x", pady=2)
 
+        # Rotate 90 degree
         tk.Button(self.frame, text="Rotate 90°",
                   command=lambda: app.apply_processor(
                       RotateProcessor(90), "Image rotated 90°")
                   ).pack(fill="x", pady=2)
+        
+        # Flip horizontal
+        tk.Button(self.frame, text="Flip Horizontal",
+                  command=lambda: app.apply_processor(
+                      FlipProcessor("horizontal"),
+                      "Image flipped horizontally")
+                  ).pack(fill="x", pady=2)
+
+        # Blur slider
+        tk.Label(self.frame, text="Blur").pack(anchor="w", pady=(10, 0))
+        tk.Scale(self.frame, from_=1, to=25, orient=tk.HORIZONTAL,
+                 command=lambda v: app.apply_processor(
+                     BlurProcessor(int(v)),
+                     f"Blur applied (k={int(v)})")
+                 ).pack(fill="x")
+
+        # Brightness slider
+        tk.Label(self.frame, text="Brightness").pack(anchor="w", pady=(10, 0))
+        tk.Scale(self.frame, from_=-100, to=100, orient=tk.HORIZONTAL,
+                 command=lambda v: app.apply_processor(
+                     BrightnessProcessor(int(v)),
+                     f"Brightness adjusted ({int(v)})")
+                 ).pack(fill="x")
 
 
 # Main Application class
