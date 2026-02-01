@@ -120,7 +120,7 @@ class ImageLoader:
     def open_image(self):
         """ loads images using file dialog"""
         # only open a single image (only the image types mentioned on assignment are allowed)
-        path = filedialog.askopenfilename(filetypes=[("Images","*.jpg,*.png,*.bmp")])
+        path = filedialog.askopenfilename(filetypes=[("Images","*.jpg *.png *.bmp *.jpeg")])
         
         if path:
             # read the image using opencv
@@ -311,11 +311,52 @@ class ImageEditorApplication:
         self.root = root
         # window details
         self.root.title("SYD35_Group_Image_Editor")
-    
+        self.root.geometry("950x650")
+
+        # Create object of each window components
+        self.state = ImageState()
+        self.loader = ImageLoader()
+        self.filename = ""
+
+        main = tk.Frame(root)
+        main.pack(fill=tk.BOTH, expand=True)
+        main.columnconfigure(0, weight=1)
+        main.rowconfigure(0, weight=1)
+
+        self.display = ImageDisplay(main)
+        self.controls = ControlPanel(main, self)
+
+        self.messages = MessagePanel(root)
+        self.status = StatusBar(root)
+        self.menu = MenuBar(root, self)
+        
+    def refresh(self):
+        """ update the window"""
+        self.display.show(self.state.current)
+        self.status.update(self.filename, self.state.current)
+
     def open_image(self):
         """ implement the file dialog opening for image loading"""
-        pass
+        image, path = self.loader.open_image()
+        if image is not None:
+            self.state.set(image)
+            self.filename = path.split("/")[-1]
+            self.refresh()
+            self.messages.log(f"Opened image: {self.filename}")
+        else:
+            self.messages.log("Image open cancelled")
     
+    def apply_processor(self, processor, message):
+        """ apply the corresponding processor for each image action"""
+        if self.state.current is None:
+            self.messages.log("Operation failed: No image loaded")
+            return
+
+        # Apply processor and commit to state
+        self.state.set(processor.process(self.state.current))
+        self.refresh()
+        self.messages.log(message)
+
     def save_image(self):
         """ implement the logic to save image"""
         pass
@@ -329,3 +370,8 @@ class ImageEditorApplication:
         pass
     
     
+# Application entry point
+if __name__== "__main__":
+    root = tk.Tk()
+    ImageEditorApplication(root)
+    root.mainloop()
