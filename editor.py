@@ -375,7 +375,9 @@ class ImageEditorApplication:
     
     def redo(self):
         """implement logic to redo the recent action"""
-        pass
+        self.state.redo()
+        self.refresh()
+        self.messages.log("Redo performed")
     
     
 # Application entry point
