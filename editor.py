@@ -358,8 +358,14 @@ class ImageEditorApplication:
         self.messages.log(message)
 
     def save_image(self):
-        """ implement the logic to save image"""
-        pass
+        """ saves the image by opening file dialog"""
+        if self.state.current is None:
+            self.messages.log("Save failed: No image loaded")
+            return
+        
+        path = self.loader.save_image(self.state.current)
+        if path:
+            self.messages.log(f"Image saved to: {path}")
     
     def undo(self):
         """ implement logic to undo the recent action """
