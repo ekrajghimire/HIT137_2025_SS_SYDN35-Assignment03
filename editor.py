@@ -80,6 +80,23 @@ class RotateProcessor(ImageProcessor):
         return image
 
 
+# ResizeProcessor child class
+class ResizeProcessor(ImageProcessor):
+    def __init__(self, scale):
+        # scale is a float like 0.75, 1.0, 1.25
+        self.scale = scale
+
+    def process(self, image):
+        """ implement the resizing logic """
+        # TODO: insert reference here
+        h, w = image.shape[:2]
+        new_w = int(w * self.scale)
+        new_h = int(h * self.scale)
+        # avoid zero dimension errors
+        new_w = max(1, new_w)
+        new_h = max(1, new_h)
+        return cv2.resize(image, (new_w, new_h))
+
 
 # Menu bar for window
 class MenuBar:
