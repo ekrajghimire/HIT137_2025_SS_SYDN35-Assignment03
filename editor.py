@@ -100,6 +100,17 @@ class ResizeProcessor(ImageProcessor):
         return cv2.resize(image, (new_w, new_h))
 
 
+# ContrastProcessor child class
+class ContrastProcessor(ImageProcessor):
+    def __init__(self, value):
+        # value controls contrast in a small range (e.g. 0.5 - 1.5)
+        self.value = value
+
+    def process(self, image):
+        """ implements logic to adjust contrast value"""
+        return cv2.convertScaleAbs(image, alpha=self.value, beta=0)
+
+
 # Menu bar for window
 class MenuBar:
     def __init__(self,root,app):
@@ -342,6 +353,17 @@ class ControlPanel:
                      f"Brightness adjusted ({int(v)})")
                  ).pack(fill="x")
 
+        # Contrast slider (small realistic range ~0.5–1.5)
+        tk.Label(self.frame, text="Contrast").pack(anchor="w", pady=(10, 0))
+        self.contrast_slider = tk.Scale(
+            self.frame, from_=-5, to=5, orient=tk.HORIZONTAL
+        )
+        self.contrast_slider.pack(fill="x")
+        self.contrast_slider.config(
+            command=lambda v: app.apply_processor(
+                ContrastProcessor(1.0 + (int(v) / 10.0)),
+                f"Contrast adjusted ({1.0 + (int(v) / 10.0)})")
+        )
 
 # Main Application class
 class ImageEditorApplication:
