@@ -337,21 +337,27 @@ class ControlPanel:
                   ).pack(fill="x", pady=2)
 
 
-        # Blur slider
+        # Blur slider (small range)
         tk.Label(self.frame, text="Blur").pack(anchor="w", pady=(10, 0))
-        tk.Scale(self.frame, from_=1, to=25, orient=tk.HORIZONTAL,
-                 command=lambda v: app.apply_processor(
+        self.blur_slider = tk.Scale(self.frame, from_=1, to=7, orient=tk.HORIZONTAL)
+        self.blur_slider.pack(fill="x")
+        self.blur_slider.config(
+            command=lambda v: app.apply_processor(
                      BlurProcessor(int(v)),
                      f"Blur applied (k={int(v)})")
-                 ).pack(fill="x")
+        )
 
-        # Brightness slider
+        # Brightness slider (small range)
         tk.Label(self.frame, text="Brightness").pack(anchor="w", pady=(10, 0))
-        tk.Scale(self.frame, from_=-100, to=100, orient=tk.HORIZONTAL,
-                 command=lambda v: app.apply_processor(
-                     BrightnessProcessor(int(v)),
-                     f"Brightness adjusted ({int(v)})")
-                 ).pack(fill="x")
+        self.brightness_slider = tk.Scale(
+            self.frame, from_=-50, to=50, orient=tk.HORIZONTAL
+        )
+        self.brightness_slider.pack(fill="x")
+        self.brightness_slider.config(
+            command=lambda v: app.apply_processor(
+                BrightnessProcessor(int(v)),
+                f"Brightness adjusted ({int(v)})")
+        )
 
         # Contrast slider (small realistic range ~0.5–1.5)
         tk.Label(self.frame, text="Contrast").pack(anchor="w", pady=(10, 0))
@@ -364,6 +370,22 @@ class ControlPanel:
                 ContrastProcessor(1.0 + (int(v) / 10.0)),
                 f"Contrast adjusted ({1.0 + (int(v) / 10.0)})")
         )
+
+        # Resize slider (75%–125%)
+        tk.Label(self.frame, text="Resize (%)").pack(anchor="w", pady=(10, 0))
+        self.resize_slider = tk.Scale(
+            self.frame,
+            from_=75, to=125,
+            orient=tk.HORIZONTAL
+        )
+        self.resize_slider.pack(fill="x")
+        self.resize_slider.set(100)  # default = original size
+        self.resize_slider.config(
+            command=lambda v: app.apply_processor(
+                ResizeProcessor(int(v)/100),
+                f"Image resized to {v}%")
+        )
+
 
 # Main Application class
 class ImageEditorApplication:
