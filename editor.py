@@ -1,6 +1,6 @@
 import cv2
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox  # message boxes for errors / confirmations
 from PIL import Image, ImageTk
 
 
@@ -121,12 +121,14 @@ class MenuBar:
         file_menu = tk.Menu(menubar)
         # add Open command to file menu
         file_menu.add_command(label="Open", command=app.open_image)
+        # add Save command
+        file_menu.add_command(label="Save", command=app.save_image)
         # add Save as command to file menu
         file_menu.add_command(label="Save As", command=app.save_image)
         # add a separator
         file_menu.add_separator()
         # add Exit command
-        file_menu.add_command(label="Exit", command=root.quit) # It will exit the program
+        file_menu.add_command(label="Exit", command=app.exit_app) # It will exit the program with confirmation
         
         
         # create an edit menu
@@ -429,14 +431,15 @@ class ImageEditorApplication:
         
     def refresh(self):
         """ update the window"""
-        self.display.show(self.state.current)
+        if self.state.current is not None:
+            self.display.show(self.state.current)
         self.status.update(self.filename, self.state.current)
 
     def open_image(self):
         """ implement the file dialog opening for image loading"""
         image, path = self.loader.open_image()
         if image is not None:
-            self.state.set(image)
+            self.state.set_original(image)
             self.filename = path.split("/")[-1]
             self.controls.reset_controls() # reset the sliders
             self.refresh()
@@ -465,6 +468,22 @@ class ImageEditorApplication:
         if path:
             self.messages.log(f"Image saved to: {path}")
     
+    def save_image_as(self):
+        """ saves image using Save As dialog """
+        if self.state.current is None:
+            self.messages.log("Save As failed: No image loaded")
+            messagebox.showerror("Error", "No image to save")
+            return
+        
+        path = self.loader.save_image(self.state.current)
+        if path:
+            self.filepath = path
+            self.filename = path.split("/")[-1]
+            self.messages.log(f"Image saved as: {path}")
+            self.refresh()
+        else:
+            self.messages.log("Save As cancelled")
+    
     def undo(self):
         """ implement logic to undo the recent action """
         self.state.undo()
@@ -476,6 +495,11 @@ class ImageEditorApplication:
         self.state.redo()
         self.refresh()
         self.messages.log("Redo performed")
+
+    def exit_app(self):
+        """ exit the application with confirmation """
+        if messagebox.askokcancel("Exit", "Do you really want to exit?"):
+            self.root.quit()
     
     
 # Application entry point
