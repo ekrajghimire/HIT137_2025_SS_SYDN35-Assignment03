@@ -217,9 +217,17 @@ class ImageDisplay:
 # ImageState class to allow for redo and undo action on image
 class ImageState:
     def __init__(self):
+        self.original = None  # store the original image
         self.current = None
         self.undo_stack = []
         self.redo_stack = []
+
+    def set_original(self, image):
+        """ set or replace the original image """
+        self.original = image
+        self.current = image
+        self.undo_stack.clear()
+        self.redo_stack.clear()
 
     def set(self, image):
         """ track the action"""
