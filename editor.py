@@ -394,6 +394,12 @@ class ControlPanel:
                 f"Image resized to {v}%")
         )
 
+    def reset_controls(self):
+        """ resets the values for blur, brightness and contrast slider """
+        self.blur_slider.set(1)
+        self.brightness_slider.set(0)
+        self.contrast_slider.set(0)   # 0 => factor 1.0
+        self.resize_slider.set(100)
 
 # Main Application class
 class ImageEditorApplication:
@@ -432,6 +438,7 @@ class ImageEditorApplication:
         if image is not None:
             self.state.set(image)
             self.filename = path.split("/")[-1]
+            self.controls.reset_controls() # reset the sliders
             self.refresh()
             self.messages.log(f"Opened image: {self.filename}")
         else:
