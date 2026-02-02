@@ -297,6 +297,18 @@ class ControlPanel:
                       RotateProcessor(90), "Image rotated 90°")
                   ).pack(fill="x", pady=2)
         
+         # Rotate 180 degree
+        tk.Button(self.frame, text="Rotate 180°",
+                  command=lambda: app.apply_processor(
+                      RotateProcessor(180), "Image rotated 180°")
+                  ).pack(fill="x", pady=2)
+
+        # Rotate 270 degree
+        tk.Button(self.frame, text="Rotate 270°",
+                  command=lambda: app.apply_processor(
+                      RotateProcessor(270), "Image rotated 270°")
+                  ).pack(fill="x", pady=2)
+        
         # Flip horizontal
         tk.Button(self.frame, text="Flip Horizontal",
                   command=lambda: app.apply_processor(
