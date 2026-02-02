@@ -58,6 +58,8 @@ class FlipProcessor(ImageProcessor):
         flipCode = 0 
         if self.mode == "horizontal":
           flipCode = 1
+        elif self.mode == "vertical":
+          flipCode = 0
         return cv2.flip(image, flipCode)
 
 # RotateProcessor child class
@@ -315,6 +317,14 @@ class ControlPanel:
                       FlipProcessor("horizontal"),
                       "Image flipped horizontally")
                   ).pack(fill="x", pady=2)
+        
+          # Flip vertical
+        tk.Button(self.frame, text="Flip Vertical",
+                  command=lambda: app.apply_processor(
+                      FlipProcessor("vertical"),
+                      "Image flipped vertically")
+                  ).pack(fill="x", pady=2)
+
 
         # Blur slider
         tk.Label(self.frame, text="Blur").pack(anchor="w", pady=(10, 0))
