@@ -56,7 +56,7 @@ class FlipProcessor(ImageProcessor):
         """ implement logic to flip the image """
         # flipCode: 1 = horizontal, 0 = vertical
         flipCode = 0 
-        if flipCode == "horizontal":
+        if self.mode == "horizontal":
           flipCode = 1
         return cv2.flip(image, flipCode)
 
