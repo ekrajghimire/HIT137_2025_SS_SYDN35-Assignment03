@@ -1,3 +1,21 @@
+"""
+Assignment: 3
+Course: HIT137_Software-Now
+Group Name: SYDNEY-35 (SYD-35)
+Authors: Roshan Lamichhane (S399178), Ekraj Ghimire - (S398831), Sudip Sunar (S398629), Shrijan Neupane  (S398335)
+
+Group Members:
+Roshan Lamichhane - S399178
+Ekraj Ghimire - S398831
+Sudip Sunar - S398629
+Shrijan Neupane - S398335
+
+
+References:
+-
+
+"""
+
 import cv2
 import tkinter as tk
 from tkinter import filedialog, messagebox  # message boxes for errors / confirmations
@@ -386,6 +404,19 @@ class ControlPanel:
             text="Note: All actions are performed on original image.\nResult may vary due to this.",
             bg="#ccffcc"
         ).pack(pady=(40, 10))
+
+         # student information
+        tk.Label(
+            self.frame,
+            text="Student Details:\n"\
+            "Group - SYDNEY-35(SYD-35)\n" \
+            "Roshan Lamichhane - S399178\n" \
+            "Ekraj Ghimire - S398831\n"\
+            "Sudip Sunar - S398629\n"\
+            "Shrijan Neupane - S398335",
+            bg="#7fe67f",
+            
+        ).pack(pady=(40,0))
 
     def reset_controls(self):
         """ resets the values for blur, brightness and contrast slider """
