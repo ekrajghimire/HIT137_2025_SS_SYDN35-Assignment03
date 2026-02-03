@@ -124,7 +124,7 @@ class MenuBar:
         # add Save command
         file_menu.add_command(label="Save", command=app.save_image)
         # add Save as command to file menu
-        file_menu.add_command(label="Save As", command=app.save_image)
+        file_menu.add_command(label="Save As", command=app.save_image_as)
         # add a separator
         file_menu.add_separator()
         # add Exit command
@@ -160,8 +160,12 @@ class ImageLoader:
             return cv2.imread(path),path
         return None,None
     
-    def save_image(self,image):
-        """ save the current image """
+    def save_image(self,image, default_path=None):
+        """ save the current image using Save (or Save As when path is None) """
+        if default_path:
+            cv2.imwrite(default_path, image)
+            return default_path
+        # Save As dialog
         path = filedialog.asksaveasfilename(defaultextension=".jpg") # default extension is jpg
         if path:
             cv2.imwrite(path, image)
@@ -260,9 +264,12 @@ class StatusBar(tk.Label):
     def __init__(self, parent):
         super().__init__(parent, bd=1,relief=tk.SUNKEN, anchor="w")
         self.pack(fill=tk.X)
-
+        self.config(text="No image loaded") # default text
     def update(self, name, image):
         # update the status bar with necessary information such as image name and resolution
+        if image is None:
+            self.config(text="No image loaded")
+            return
         h, w = image.shape[:2]
         self.config(text=f"{name} | {w} x {h}")
     
@@ -326,7 +333,7 @@ class ControlPanel:
 
         # Blur slider (small range)
         tk.Label(self.frame, text="Blur").pack(anchor="w", pady=(10, 0))
-        self.blur_slider = tk.Scale(self.frame, from_=1, to=7, orient=tk.HORIZONTAL)
+        self.blur_slider = tk.Scale(self.frame, from_=1, to=50, orient=tk.HORIZONTAL)
         self.blur_slider.pack(fill="x")
         self.blur_slider.config(
             command=lambda v: app.apply_processor(
@@ -337,7 +344,7 @@ class ControlPanel:
         # Brightness slider (small range)
         tk.Label(self.frame, text="Brightness").pack(anchor="w", pady=(10, 0))
         self.brightness_slider = tk.Scale(
-            self.frame, from_=-50, to=50, orient=tk.HORIZONTAL
+            self.frame, from_=-30, to=50, orient=tk.HORIZONTAL
         )
         self.brightness_slider.pack(fill="x")
         self.brightness_slider.config(
@@ -349,7 +356,7 @@ class ControlPanel:
         # Contrast slider (small realistic range ~0.5–1.5)
         tk.Label(self.frame, text="Contrast").pack(anchor="w", pady=(10, 0))
         self.contrast_slider = tk.Scale(
-            self.frame, from_=-5, to=5, orient=tk.HORIZONTAL
+            self.frame, from_=-5, to=10, orient=tk.HORIZONTAL
         )
         self.contrast_slider.pack(fill="x")
         self.contrast_slider.config(
@@ -362,7 +369,7 @@ class ControlPanel:
         tk.Label(self.frame, text="Resize (%)").pack(anchor="w", pady=(10, 0))
         self.resize_slider = tk.Scale(
             self.frame,
-            from_=75, to=125,
+            from_=75, to=200,
             orient=tk.HORIZONTAL
         )
         self.resize_slider.pack(fill="x")
@@ -372,6 +379,13 @@ class ControlPanel:
                 ResizeProcessor(int(v)/100),
                 f"Image resized to {v}%")
         )
+
+        # information label to explain how actions work
+        tk.Label(
+            self.frame,
+            text="Note: All actions are performed on original image.\nResult may vary due to this.",
+            bg="#ccffcc"
+        ).pack(pady=(40, 10))
 
     def reset_controls(self):
         """ resets the values for blur, brightness and contrast slider """
@@ -393,6 +407,8 @@ class ImageEditorApplication:
         self.state = ImageState()
         self.loader = ImageLoader()
         self.filename = ""
+        # used during saving
+        self.filepath = None
 
         main = tk.Frame(root)
         main.pack(fill=tk.BOTH, expand=True)
@@ -431,13 +447,27 @@ class ImageEditorApplication:
         self.state.set(processed)
         self.refresh()
 
+
     def save_image(self):
-        """ saves the image by opening file dialog"""
+        """ saves the image by opening file dialog or overwriting current file"""
         if self.state.current is None:
+            messagebox.showerror("Error", "No image to save")
             return
         
-        path = self.loader.save_image(self.state.current)
-    
+        # if we already have a path, confirm overwrite
+        if self.filepath:
+            answer = messagebox.askyesno("Confirm Save", f"Overwrite existing file?\n{self.filepath}")
+            if not answer:
+                # user cancelled overwrite, so do Save As instead
+                self.save_image_as()
+                return
+            path = self.loader.save_image(self.state.current, self.filepath)
+        else:
+            path = self.loader.save_image(self.state.current)
+            self.filepath = path
+            if path:
+                self.filename = path.split("/")[-1]
+
     def save_image_as(self):
         """ saves image using Save As dialog """
         if self.state.current is None:
