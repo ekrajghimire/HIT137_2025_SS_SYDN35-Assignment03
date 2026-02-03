@@ -266,29 +266,6 @@ class StatusBar(tk.Label):
         h, w = image.shape[:2]
         self.config(text=f"{name} | {w} x {h}")
     
-# MessagePanel class to display of recently performed actions
-class MessagePanel:
-    def __init__(self, parent):
-        frame = tk.Frame(parent)
-        frame.pack(fill=tk.X, padx=5)
-
-        tk.Label(frame, text="Messages").pack(anchor="w")
-
-        self.text = tk.Text(
-            frame,
-            height=4,
-            state="disabled",
-            wrap="word",
-            bg="#6e3c3c"
-        )
-        self.text.pack(fill=tk.X)
-
-    def log(self, message):
-        """ log the performed action"""
-        self.text.config(state="normal")
-        self.text.insert(tk.END, f"• {message}\n")
-        self.text.see(tk.END)
-        self.text.config(state="disabled")
 
 # ControlPanel class contains buttons for image manipulation
 class ControlPanel:
@@ -425,7 +402,6 @@ class ImageEditorApplication:
         self.display = ImageDisplay(main)
         self.controls = ControlPanel(main, self)
 
-        self.messages = MessagePanel(root)
         self.status = StatusBar(root)
         self.menu = MenuBar(root, self)
         
@@ -443,35 +419,28 @@ class ImageEditorApplication:
             self.filename = path.split("/")[-1]
             self.controls.reset_controls() # reset the sliders
             self.refresh()
-            self.messages.log(f"Opened image: {self.filename}")
-        else:
-            self.messages.log("Image open cancelled")
     
     def apply_processor(self, processor, message):
         """ apply the corresponding processor for each image action"""
-        if self.state.current is None:
-            self.messages.log("Operation failed: No image loaded")
+        if self.state.original is None:
+            messagebox.showerror("Error", "No image loaded")
             return
 
-        # Apply processor and commit to state
-        self.state.set(processor.process(self.state.current))
+        # always apply processor to the original image
+        processed = processor.process(self.state.original)
+        self.state.set(processed)
         self.refresh()
-        self.messages.log(message)
 
     def save_image(self):
         """ saves the image by opening file dialog"""
         if self.state.current is None:
-            self.messages.log("Save failed: No image loaded")
             return
         
         path = self.loader.save_image(self.state.current)
-        if path:
-            self.messages.log(f"Image saved to: {path}")
     
     def save_image_as(self):
         """ saves image using Save As dialog """
         if self.state.current is None:
-            self.messages.log("Save As failed: No image loaded")
             messagebox.showerror("Error", "No image to save")
             return
         
@@ -479,22 +448,25 @@ class ImageEditorApplication:
         if path:
             self.filepath = path
             self.filename = path.split("/")[-1]
-            self.messages.log(f"Image saved as: {path}")
             self.refresh()
-        else:
-            self.messages.log("Save As cancelled")
     
     def undo(self):
         """ implement logic to undo the recent action """
+        if self.state.current is None:
+            messagebox.showerror("Error", "Nothing to undo")
+            return
+
         self.state.undo()
         self.refresh()
-        self.messages.log("Undo performed")
     
     def redo(self):
         """implement logic to redo the recent action"""
+        if self.state.current is None:
+            messagebox.showerror("Error", "Nothing to redo")
+            return
+
         self.state.redo()
         self.refresh()
-        self.messages.log("Redo performed")
 
     def exit_app(self):
         """ exit the application with confirmation """
