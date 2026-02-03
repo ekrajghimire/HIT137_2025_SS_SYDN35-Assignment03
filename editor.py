@@ -431,7 +431,7 @@ class ImageEditorApplication:
     def __init__(self,root):
         self.root = root
         # window details
-        self.root.title("SYD35_Group_Image_Editor")
+        self.root.title("SYD35_Group_Image_Editor_Assignment_03_HIT137-Software-Now")
         self.root.geometry("950x650")
 
         # Create object of each window components
