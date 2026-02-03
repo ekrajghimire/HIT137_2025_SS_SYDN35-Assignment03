@@ -12,8 +12,10 @@ Shrijan Neupane - S398335
 
 
 References:
--
-
+- https://stackoverflow.com/questions/50422735/tkinter-resize-frame-and-contents-with-main-window
+- https://docs.python.org/3/library/tkinter.html
+- https://www.geeksforgeeks.org/python/opencv-python-tutorial/
+- https://docs.opencv.org/4.x/d6/d00/tutorial_py_root.html
 """
 
 import cv2
@@ -108,7 +110,6 @@ class ResizeProcessor(ImageProcessor):
 
     def process(self, image):
         """ implement the resizing logic """
-        # TODO: insert reference here
         h, w = image.shape[:2]
         new_w = int(w * self.scale)
         new_h = int(h * self.scale)
@@ -206,7 +207,6 @@ class ImageDisplay:
 
     def resize_to_fit(self, image):
         """ method to the fit the image within the frame"""
-        # Reference: https://stackoverflow.com/questions/50422735/tkinter-resize-frame-and-contents-with-main-window
         # Get available frame size
         fw = self.container.winfo_width()
         fh = self.container.winfo_height()
